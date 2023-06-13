@@ -13,7 +13,8 @@
 #include <ATen/ops/empty_like.h>
 #include <ATen/ops/zeros.h>
 #endif
-
+#include <sys/time.h>
+#include <iostream>
 #include <limits>
 #include <vector>
 #include <ATen/Config.h>
@@ -659,7 +660,9 @@ void raw_cudnn_convolution_forward_out_32bit(
 
       Constant one(dataType, 1);
       Constant zero(dataType, 0);
-
+    struct timeval t1,t2;
+    double timeuse;
+    gettimeofday(&t1,NULL);
       AT_CUDNN_CHECK_WITH_SHAPES(cudnnConvolutionForward(
           args.handle,
           &one, args.idesc.desc(), input.data_ptr(),
@@ -667,6 +670,13 @@ void raw_cudnn_convolution_forward_out_32bit(
           args.cdesc.desc(), fwdAlgPerf.algo, workspace.data_ptr(), fwdAlgPerf.memory,
           &zero, args.odesc.desc(), output.data_ptr()),
         args, "Forward algorithm: ", static_cast<int>(fwdAlgPerf.algo), "\n");
+
+      gettimeofday(&t2,NULL);
+    timeuse = ((t2.tv_sec - t1.tv_sec)*1000000  + (double)(t2.tv_usec - t1.tv_usec)) / 1000;
+//    std::cout << "cudnnConvolutionForward------groups----" << groups
+//    << "---input_shape---" << args.params.input_size[0] << ", " << args.params.input_size[1] << ", " << args.params.input_size[2] << ", " << args.params.input_size[3] <<
+//    "---filter_shape---" << args.params.weight_size[0] << ", " << args.params.weight_size[1] << ", " << args.params.weight_size[2] << ", " << args.params.weight_size[3] <<
+//    "---timeuse---"<< timeuse << " ms " << std::endl;;
       }
   );
 }
@@ -719,6 +729,10 @@ void raw_cudnn_convolution_backward_input_out_32bit(
       Constant one(dataType, 1);
       Constant zero(dataType, 0);
 
+    struct timeval t1,t2;
+    double timeuse;
+    gettimeofday(&t1,NULL);
+
       AT_CUDNN_CHECK_WITH_SHAPES(cudnnConvolutionBackwardData(
           args.handle,
           &one, args.wdesc.desc(), weight.data_ptr(),
@@ -730,6 +744,14 @@ void raw_cudnn_convolution_backward_input_out_32bit(
         "    grad_output: ", grad_output.data_ptr(), "\n",
         "    grad_input: ", grad_input.data_ptr(), "\n",
         "Backward data algorithm: ", static_cast<int>(bwdDataAlgPerf.algo), "\n");
+
+              gettimeofday(&t2,NULL);
+    timeuse = ((t2.tv_sec - t1.tv_sec)*1000000  + (double)(t2.tv_usec - t1.tv_usec)) / 1000;
+
+//    std::cout << "cudnnConvolutionBackwardData-----groups----" << groups
+//    << "---input_shape---" << args.params.input_size[0] << ", " << args.params.input_size[1] << ", " << args.params.input_size[2] << ", " << args.params.input_size[3] <<
+//    "---filter_shape---" << args.params.weight_size[0] << ", " << args.params.weight_size[1] << ", " << args.params.weight_size[2] << ", " << args.params.weight_size[3] <<
+//    "---timeuse---"<< timeuse << " ms " << std::endl;;
     }
   );
 }
@@ -782,6 +804,10 @@ void raw_cudnn_convolution_backward_weight_out_32bit(
       Constant one(dataType, 1);
       Constant zero(dataType, 0);
 
+    struct timeval t1,t2;
+    double timeuse;
+    gettimeofday(&t1,NULL);
+
       AT_CUDNN_CHECK_WITH_SHAPES(cudnnConvolutionBackwardFilter(
           args.handle,
           &one, args.idesc.desc(), input.data_ptr(),
@@ -793,6 +819,14 @@ void raw_cudnn_convolution_backward_weight_out_32bit(
         "    grad_output: ", grad_output.data_ptr(), "\n",
         "    grad_weight: ", grad_weight.data_ptr(), "\n",
         "Backward filter algorithm: ", static_cast<int>(bwdFilterAlgPerf.algo), "\n");
+
+              gettimeofday(&t2,NULL);
+    timeuse = ((t2.tv_sec - t1.tv_sec)*1000000  + (double)(t2.tv_usec - t1.tv_usec)) / 1000;
+//    std::cout << "cudnnConvolutionBackwardFilter-----groups----" << groups
+//    << "---input_shape---" << args.params.input_size[0] << ", " << args.params.input_size[1] << ", " << args.params.input_size[2] << ", " << args.params.input_size[3] <<
+//    "---filter_shape---" << args.params.weight_size[0] << ", " << args.params.weight_size[1] << ", " << args.params.weight_size[2] << ", " << args.params.weight_size[3] <<
+//    "---timeuse---"<< timeuse << " ms " << std::endl;;
+
     }
   );
 }

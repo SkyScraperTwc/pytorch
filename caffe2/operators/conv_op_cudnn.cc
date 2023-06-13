@@ -809,6 +809,7 @@ bool CudnnConvOp::DoRunWithType() {
   // Now, actually run the computation.
   // Run directly through cuDNN if possible
 #if CUDNN_VERSION_MIN(7, 0, 0)
+    std::cout << "11111111111111111111111" << std::endl;;
   cudnn_wrapper_.with_cudnn_state(cudnn_state_, [&](CuDNNState* state) {
     CUDNN_ENFORCE(cudnnConvolutionForward(
         state->cudnn_handle(),
@@ -827,6 +828,7 @@ bool CudnnConvOp::DoRunWithType() {
   });
 #else
   // otherwise manually run through groups
+      std::cout << "22222222222222222222222---group_---" << group_<< std::endl;;
   for (int i = 0; i < group_; ++i) {
     cudnn_wrapper_.with_cudnn_state(cudnn_state_, [&](CuDNNState* state) {
       CUDNN_ENFORCE(cudnnConvolutionForward(

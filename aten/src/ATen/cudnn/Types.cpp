@@ -1,17 +1,19 @@
 #include <ATen/cudnn/Types.h>
 
 #include <ATen/ATen.h>
-
+#include <iostream>
 namespace at { namespace native {
 
 cudnnDataType_t getCudnnDataTypeFromScalarType(const at::ScalarType dtype) {
   if (dtype == c10::kQInt8) {
     return CUDNN_DATA_INT8;
   } else if (dtype == at::kFloat) {
+    std::cout<< "kFloat-----------" << std::endl;
     return CUDNN_DATA_FLOAT;
   } else if (dtype == at::kDouble) {
     return CUDNN_DATA_DOUBLE;
   } else if (dtype == at::kHalf) {
+    std::cout<< "khalf-----------" << std::endl;
     return CUDNN_DATA_HALF;
   }
 #if defined(CUDNN_VERSION) && CUDNN_VERSION >= 8200

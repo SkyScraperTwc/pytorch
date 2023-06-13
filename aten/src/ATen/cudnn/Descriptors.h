@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 #include <ATen/cuda/CUDAContext.h>
 #include <ATen/cuda/Exceptions.h>
